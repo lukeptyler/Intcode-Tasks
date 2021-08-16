@@ -15,6 +15,7 @@ part1 = do
 
   let intcode = initIntcode code
 
+  putStrLn "Input:  1"
   void $ evalStateT (pushInput 1 >> runProgramIO) intcode
 
 part2 = do
@@ -22,4 +23,5 @@ part2 = do
 
   let intcode = initIntcode code
 
+  putStrLn "Input:  5"
   void $ evalStateT (pushInput 5 >> runProgramIO) intcode

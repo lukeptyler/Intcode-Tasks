@@ -10,6 +10,7 @@ import           Lib                 (prompt)
 
 import qualified Task01.Core         as Core1
 import qualified Task02.Core         as Core2
+import qualified Task03.Core         as Core3
 
 main :: IO ()
 main = do
@@ -58,6 +59,7 @@ taskList :: [Task]
 taskList =
   [ Task "Task (1): 1202 Program Alarm"               Core1.part1 Core1.part2
   , Task "Task (2): Sunny with a Chance of Asteroids" Core2.part1 Core2.part2
+  , Task "Task (3): Amplification Circuit"            Core3.part1 Core3.part2
   ]
 
 taskMap :: IntMap Task

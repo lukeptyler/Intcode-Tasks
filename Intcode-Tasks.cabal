@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 44f87dfecf56d8771623c34588661d4b85f602a72141435fe02a26777afd5aec
+-- hash: de210ceda27195e60b5a4c217cbce56ea98b0d92d105d1611e7a71730c6ea3a4
 
 name:           Intcode-Tasks
 version:        0.1.0.0
@@ -32,6 +32,8 @@ library
       Task01.Intcode
       Task02.Core
       Task02.Intcode
+      Task03.Core
+      Task03.Intcode
   other-modules:
       Paths_Intcode_Tasks
   hs-source-dirs:
