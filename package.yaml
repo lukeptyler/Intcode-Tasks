@@ -24,6 +24,10 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+  - transformers
+  - array
+  - split
 
 executables:
   Intcode-Tasks-exe:

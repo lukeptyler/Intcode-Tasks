@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f303fa63fde27c139bede190fb8b9f669f76a85c08ddd431a7f8f0a19390c257
+-- hash: ec0e062ce3b4b97019650a376e646ce4daf5ab3c3a224428e609824288dad9ef
 
 name:           Intcode-Tasks
 version:        0.1.0.0
@@ -27,13 +27,18 @@ source-repository head
 
 library
   exposed-modules:
+      Lib
       Task01.Core
+      Task01.Intcode
   other-modules:
       Paths_Intcode_Tasks
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
+    , split
+    , transformers
   default-language: Haskell2010
 
 executable Intcode-Tasks-exe

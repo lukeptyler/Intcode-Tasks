@@ -3,7 +3,31 @@ module Task01.Core
   , part2
   ) where
 
-part1 :: IO ()
-part1 = putStrLn "part1"
+import Control.Monad.Trans.State (evalStateT)
+import Data.Monoid               (First(..))
+import Data.Bool                 (bool)
 
-part2 = putStrLn "part2"
+import Lib                       (inputFile)
+
+import Task01.Intcode            (initIntcode, runUntilHalt, codeAt)
+
+part1 :: IO ()
+part1 = do
+  input  <- inputFile "src/Task01/input.txt"
+  let intcode = initIntcode $ modifyInput 12 2 input
+
+  answer <- evalStateT (runUntilHalt >> codeAt 0) intcode
+  print answer
+
+part2 = do
+  input  <- inputFile "src/Task01/input.txt"
+  let pairs = [(noun,verb) | noun <- [0..99], verb <- [0..99]]
+
+  answers <- sequence $ map (\(n, v) -> bool (First Nothing) (First $ Just $ 100 * n + v) <$> validPair n v input) pairs
+  print $ (\(Just answer) -> answer) $ getFirst $ mconcat answers
+
+validPair :: Int -> Int -> [Int] -> IO Bool
+validPair noun verb = ((==) 19690720 <$>) . evalStateT (runUntilHalt >> codeAt 0) . initIntcode . modifyInput noun verb
+
+modifyInput :: Int -> Int -> [Int] -> [Int]
+modifyInput x y ls = head ls : [x,y] ++ drop 3 ls
