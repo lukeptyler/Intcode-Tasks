@@ -70,6 +70,9 @@ paramsWithWrite argCount = do
 isRunning :: Intcode -> Bool
 isRunning = (==) Running . _state
 
+isOutputing :: Intcode -> Bool
+isOutputing = (==) Outputing . _state
+
 isHalted :: Intcode -> Bool
 isHalted = (==) Halted . _state
 
