@@ -1,11 +1,12 @@
 module Main where
 
 import           Control.Monad.Loops (untilM_)
-import           System.IO           (hFlush, stdout)
 import           Text.Read           (readEither)
 
 import           Data.IntMap         (IntMap)
 import qualified Data.IntMap         as IM
+
+import           Lib                 (prompt)
 
 import qualified Task01.Core         as Core1
 import qualified Task02.Core         as Core2
@@ -40,12 +41,6 @@ exitPrompt = do
     "y" -> return False
     "n" -> return True
     _   -> putStrLn "  Please enter 'y' or 'n'" >> exitPrompt
-
-prompt :: String -> IO String
-prompt text = do
-  putStr text
-  hFlush stdout
-  getLine
 
 data Task = Task {name :: String, part1, part2 :: IO ()}
 

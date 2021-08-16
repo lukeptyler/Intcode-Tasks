@@ -3,9 +3,23 @@ module Task02.Core
   , part2
   ) where
 
+import Control.Monad.Trans.State (evalStateT)
+import Control.Monad             (void)
+
+import Lib                       (inputFile)
+import Task02.Intcode            (initIntcode, runProgramIO, pushInput)
+
 part1 :: IO ()
 part1 = do
-  putStrLn "part1"
+  code <- inputFile "src/Task02/input.txt"
+
+  let intcode = initIntcode code
+
+  void $ evalStateT (pushInput 1 >> runProgramIO) intcode
 
 part2 = do
-  putStrLn "part2"
+  code <- inputFile "src/Task02/input.txt"
+
+  let intcode = initIntcode code
+
+  void $ evalStateT (pushInput 5 >> runProgramIO) intcode
