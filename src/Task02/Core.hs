@@ -18,6 +18,7 @@ part1 = do
   putStrLn "Input:  1"
   void $ evalStateT (pushInput 1 >> runProgramIO) intcode
 
+part2 :: IO ()
 part2 = do
   code <- inputFile "src/Task02/input.txt"
 

@@ -19,7 +19,19 @@ part1 = do
   answer <- evalStateT (runUntilHalt >> codeAt 0) intcode
   print answer
 
+part2 :: IO ()
 part2 = do
+  input  <- inputFile "src/Task01/input.txt"
+  let intcode = initIntcode $ modifyInput 52 96 input
+
+  answer <- evalStateT (runUntilHalt >> codeAt 0) intcode
+  if answer == 19690720
+  then print $ 100 * 52 + 96
+  else putStrLn "???"
+
+-- (52 96)
+part2_Calculation :: IO ()
+part2_Calculation = do
   input  <- inputFile "src/Task01/input.txt"
   let pairs = [(noun,verb) | noun <- [0..99], verb <- [0..99]]
 
