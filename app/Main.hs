@@ -8,6 +8,7 @@ import           Data.IntMap         (IntMap)
 import qualified Data.IntMap         as IM
 
 import qualified Task01.Core         as Core1
+import qualified Task02.Core         as Core2
 
 main :: IO ()
 main = do
@@ -50,6 +51,8 @@ data Task = Task {name :: String, part1, part2 :: IO ()}
 
 runTask :: Task -> IO ()
 runTask task = do
+  putStrLn ""
+  putStrLn $ name task
   putStrLn "\n---- PART 1 ----"
   part1 task
   putStrLn "\n---- PART 2 ----"
@@ -58,7 +61,8 @@ runTask task = do
 
 taskList :: [Task]
 taskList =
-  [ Task "Task (1): 1202 Program Alarm" Core1.part1 Core1.part2
+  [ Task "Task (1): 1202 Program Alarm"               Core1.part1 Core1.part2
+  , Task "Task (2): Sunny with a Chance of Asteroids" Core2.part1 Core2.part2
   ]
 
 taskMap :: IntMap Task
