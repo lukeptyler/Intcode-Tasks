@@ -4,7 +4,7 @@ import Control.Monad.Trans.State (gets, modify)
 
 import Data.Bool                 (bool)
 
-import Task05.Intcode.Types      (Intcode(..), Program,
+import Task05.Intcode.Types      (Intcode(..), ProgramT,
                                   Index, State(..), Operation)
 import Task05.Intcode.Accessors  (setAt,
                                   modFocus, setFocus)
@@ -25,7 +25,7 @@ opInput [target] = do
   then modify $ \intcode -> intcode {_state = RequestInput, _callback = Just $ inputCallback target}
   else inputCallback target
   where
-    inputCallback :: Monad m => Index -> Program m ()
+    inputCallback :: Monad m => Index -> ProgramT m ()
     inputCallback target = do
       inputQueue <- gets _inputQueue
       setAt target $ head inputQueue
@@ -69,5 +69,5 @@ opAdjRelBase [x] = do
   modFocus 2
 opAdjRelBase _ = error "opAdjRelBase requires 1 parameter"
 
-opHalt :: Monad m => Program m ()
+opHalt :: Monad m => ProgramT m ()
 opHalt = modify $ \intcode -> intcode {_state = Halted}

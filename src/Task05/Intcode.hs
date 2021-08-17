@@ -1,16 +1,16 @@
 module Task05.Intcode 
-  ( Intcode
-  , Program
-  , ProgramIO
-  , initIntcode
-  , runProgram
-  , runProgramIO
-  , pushInput
-  , popOutput
-  , step
-  )where
+  ( module I
+  ) where
 
-import Task05.Intcode.Types
-import Task05.Intcode.Accessors
-import Task05.Intcode.Operations
-import Task05.Intcode.Program
+import Task05.Intcode.Types       as I (Intcode,
+                                        Program, ProgramT, ProgramIO,
+                                        Integration, IntegrationT, IntegrationIO,
+                                        initIntcode)
+import Task05.Intcode.Accessors   as I (pushInput, popOutput)
+import Task05.Intcode.Program     as I (execProgram, evalProgram,
+                                        execProgramT, evalProgramT,
+                                        runUntilStop,
+                                        runProgram, runProgramIO)
+import Task05.Intcode.Integration as I (execIntegration, evalIntegration,
+                                        execIntegrationT, evalIntegrationT,
+                                        runIntegration, runIntegrationIO)

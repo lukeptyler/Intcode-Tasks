@@ -7,21 +7,21 @@ import           Control.Monad             (zipWithM)
 
 import           Data.Maybe                (fromMaybe)
 
-import           Task05.Intcode.Types      (Intcode(..), Program,
+import           Task05.Intcode.Types      (Intcode(..), ProgramT,
                                             State(..), Index,
                                             ParamMode(..), Param)
 
 -- Getters/Setters
-setFocus :: Monad m => Index -> Program m ()
+setFocus :: Monad m => Index -> ProgramT m ()
 setFocus f' = modify $ \intcode -> intcode {_focus = f'}
 
-modFocus :: Monad m => Index -> Program m ()
+modFocus :: Monad m => Index -> ProgramT m ()
 modFocus f' = modify $ \intcode -> intcode {_focus = f' + _focus intcode}
 
-codeAt :: Monad m => Index -> Program m Int
+codeAt :: Monad m => Index -> ProgramT m Int
 codeAt = valAt Immediate
 
-valAt :: Monad m => ParamMode -> Index -> Program m Int
+valAt :: Monad m => ParamMode -> Index -> ProgramT m Int
 valAt mode index = do
   code <- gets _code
   let c = fromMaybe 0 $ code IM.!? index
@@ -39,37 +39,37 @@ valAt mode index = do
       relBase <- gets _relBase
       return $ relBase + c
 
-setAt :: Monad m => Index -> Int -> Program m ()
+setAt :: Monad m => Index -> Int -> ProgramT m ()
 setAt i v = do
   code <- gets _code
   modify $ \intcode -> intcode {_code = IM.insert i v code}
 
-pushInput :: Monad m => Int -> Program m ()
+pushInput :: Monad m => Int -> ProgramT m ()
 pushInput input = modify $ \intcode -> intcode {_inputQueue = _inputQueue intcode ++ [input]}
 
-popOutput :: Monad m => Program m Int
+popOutput :: Monad m => ProgramT m Int
 popOutput = do
   outputQueue <- gets _outputQueue
   modify $ \intcode -> intcode {_outputQueue = tail outputQueue}
   return $ head outputQueue
 
-opcode :: Monad m => Program m Int
+opcode :: Monad m => ProgramT m Int
 opcode = do
   op <- gets _focus >>= codeAt
   return $ op `mod` 100
 
-paramModes :: Monad m => Program m [ParamMode]
+paramModes :: Monad m => ProgramT m [ParamMode]
 paramModes = do
   op <- gets _focus >>= codeAt
   return $ parseParamModes $ op `div` 100
 
-params :: Monad m => Int -> Program m [Param]
+params :: Monad m => Int -> ProgramT m [Param]
 params argCount = do
   focus <- gets _focus
   modes <- paramModes
   zipWithM valAt modes [focus+1 .. focus+argCount]
 
-paramsWithWrite :: Monad m => Int -> Program m [Param]
+paramsWithWrite :: Monad m => Int -> ProgramT m [Param]
 paramsWithWrite argCount = do
   focus <- gets _focus
   modes <- paramModes

@@ -1,25 +1,39 @@
 module Task05.Intcode.Program where
 
-import Control.Monad.Trans.State (get, gets, modify)
+import Control.Monad.Trans.State (execStateT, evalStateT,
+                                  execState, evalState,
+                                  get, gets, modify)
 import Control.Monad.Loops       (iterateUntil)
 import Control.Monad.IO.Class    (liftIO)
 
 import Lib                       (prompt)
 
 import Task05.Intcode.Types      (State(..), Intcode(..),
-                                  Program, ProgramIO)
+                                  Program, ProgramT, ProgramIO)
 import Task05.Intcode.Accessors  (opcode,
                                   params, paramsWithWrite,
                                   isRunning, isHalted,
                                   pushInput, popOutput)
 import Task05.Intcode.Operations
 
-step_ :: Monad m => Program m ()
+execProgram :: Program a -> Intcode -> Intcode
+execProgram = execState
+
+evalProgram :: Program a -> Intcode -> a
+evalProgram = evalState
+
+execProgramT :: Monad m => ProgramT m a -> Intcode -> m Intcode
+execProgramT = execStateT
+
+evalProgramT :: Monad m => ProgramT m a -> Intcode -> m a
+evalProgramT = evalStateT
+
+step_ :: Monad m => ProgramT m ()
 step_ = do
   state <- gets _state
   stepState_ state
     
-stepState_ :: Monad m => State -> Program m ()
+stepState_ :: Monad m => State -> ProgramT m ()
 stepState_ Running = do
   op <- opcode
   case op of
@@ -34,6 +48,10 @@ stepState_ Running = do
     9  -> params 1 >>= opAdjRelBase
 
     99 -> opHalt
+
+    n -> do
+      focus <- gets _focus
+      error $ "invalid opcode: " ++ show n ++ " " ++ "Focus: " ++ show focus
 stepState_ Halted = return ()
 stepState_ RequestInput = do
   inputQueue <- gets _inputQueue
@@ -42,7 +60,7 @@ stepState_ Outputing = do
   outputQueue <- gets _outputQueue
   if not $ null outputQueue then return () else runCallback "Outputing"
 
-runCallback :: Monad m => String -> Program m ()
+runCallback :: Monad m => String -> ProgramT m ()
 runCallback for = do
   mcallback <- gets _callback
   case mcallback of
@@ -51,22 +69,30 @@ runCallback for = do
       modify $ \intcode -> intcode {_state = Running, _callback = Nothing}
       callback
 
-step :: Monad m => Program m Intcode
+step :: Monad m => ProgramT m Intcode
 step = step_ >> get
 
-runProgram :: Monad m => Program m Intcode
-runProgram = iterateUntil (not . isRunning) step
+runUntilStop :: Monad m => ProgramT m Intcode
+runUntilStop = iterateUntil (not . isRunning) step
+
+runProgram :: Monad m => ProgramT m () -> ProgramT m () -> ProgramT m Intcode
+runProgram handleInput handleOutput = iterateUntil isHalted $ do
+  afterStop <- runUntilStop
+  case _state afterStop of
+    RequestInput -> handleInput
+    Outputing    -> handleOutput
+    _            -> pure ()
+  get
 
 runProgramIO :: ProgramIO Intcode
-runProgramIO = iterateUntil isHalted $ do
-  afterStop <- runProgram
-  case _state afterStop of
-    RequestInput -> do
-      input <- liftIO (read <$> prompt "Input:  ")
+runProgramIO = runProgram inputIO outputIO
+  where
+    inputIO :: ProgramIO ()
+    inputIO = do
+      input <- liftIO $ read <$> prompt "Input:  "
       pushInput input
-    Outputing    -> do
+
+    outputIO :: ProgramIO ()
+    outputIO = do
       output <- popOutput
       liftIO $ putStrLn $ "Output: " ++ show output
-    _            -> pure ()
-
-  get

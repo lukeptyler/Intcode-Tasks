@@ -5,8 +5,8 @@ import           Data.IntMap               (IntMap)
 import qualified Data.IntMap               as IM
 
 import           Control.Monad.Trans.State (StateT)
+import           Data.Functor.Identity     (Identity)
 
--- Intcode --
 type Index   = Int
 type Param   = Int
 type Code    = IntMap Int
@@ -20,7 +20,7 @@ data Intcode = Intcode
   { _state :: State
   , _focus, _relBase :: Index
   , _inputQueue, _outputQueue :: [Int]
-  , _callback :: forall m. Monad m => Maybe (Program m ())
+  , _callback :: forall m. Monad m => Maybe (ProgramT m ())
   , _code :: Code}
 instance Show Intcode where
   show intcode = 
@@ -41,10 +41,13 @@ initIntcode codeData = Intcode
   , _code = IM.fromList $ zip [0..length codeData-1] codeData
   }
 
--- Program --
+type ProgramT  = StateT Intcode
+type Program   = ProgramT Identity
+type ProgramIO = ProgramT IO
 
-type Program   = StateT Intcode
-type ProgramIO = Program IO
+type IntegrationT  s m = StateT s (ProgramT m)
+type Integration   s   = IntegrationT s Identity
+type IntegrationIO s   = IntegrationT s IO
 
 data ParamMode = Immediate
                | Position
@@ -53,4 +56,4 @@ data ParamMode = Immediate
                | WriteRelative
   deriving (Show, Eq)
 
-type Operation m = Monad m => [Param] -> Program m ()
+type Operation m = Monad m => [Param] -> ProgramT m ()
