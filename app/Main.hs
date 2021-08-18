@@ -14,6 +14,7 @@ import qualified Task03.Core         as Core3
 import qualified Task04.Core         as Core4
 import qualified Task05.Core         as Core5
 import qualified Task06.Core         as Core6
+import qualified Task07.Core         as Core7
 
 main :: IO ()
 main = do
@@ -66,6 +67,7 @@ taskList =
   , Task "Task (4): Sensor Boost"                     Core4.part1 Core4.part2
   , Task "Task (5): Space Police"                     Core5.part1 Core5.part2
   , Task "Task (6): Care Package"                     Core6.part1 Core6.part2
+  , Task "Task (7): Oxygen System"                    Core7.part1 Core7.part2
   ]
 
 taskMap :: IntMap Task
