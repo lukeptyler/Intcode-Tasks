@@ -16,8 +16,8 @@ import           Data.Maybe                (fromMaybe, maybe)
 import           Lib                       (inputFile,
                                             Point, (+.), 
                                             clearTerminal, 
-                                            mapToList, floodFillAdj,
-                                            drawMap, drawFloodMap)
+                                            mapToListPoints, floodFillAdj,
+                                            drawMapPoints, drawFloodMap)
 
 import           Task07.Intcode            (IntegrationIO, Integration, 
                                             initIntcode, 
@@ -149,7 +149,7 @@ exploreInteractive = runIntegration handleInput handleOutput
     setDir dir = modify $ \(m, droid) -> (m, droid {_dir = dir})
 
 _drawMap :: Map Point Tile -> Droid -> IO ()
-_drawMap m droid = drawMap _drawTile $ mapToList Unvisited m
+_drawMap m droid = drawMapPoints _drawTile $ mapToListPoints Unvisited m
   where
     _drawTile :: (Point, Tile) -> String
     _drawTile (_    , Unvisited)    = "\x1b[48;5;145m \x1b[0m"

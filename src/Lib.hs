@@ -30,23 +30,32 @@ prompt text = do
 clearTerminal :: IO ()
 clearTerminal = putStr $ (toEnum 27) : "[H" ++ [toEnum 27] ++ "[J"
 
-mapToList :: a -> Map Point a -> [[(Point,a)]]
-mapToList defaultTile m = map (\y -> map (\x -> ((x,y), fromMaybe defaultTile $ m M.!? (x,y))) [leftBound .. rightBound]) [topBound .. bottomBound]
-  where
-    keys = M.keys m
-    leftBound   = minimum $ map fst keys
-    rightBound  = maximum $ map fst keys
-    topBound    = minimum $ map snd keys
-    bottomBound = maximum $ map snd keys
+mapToListPoints :: a -> Map Point a -> [[(Point,a)]]
+mapToListPoints = mapToListPointsBorder 0
 
-mapToListBorder :: Int -> a -> Map Point a -> [[(Point,a)]]
-mapToListBorder border defaultTile m = map (\y -> map (\x -> ((x,y), fromMaybe defaultTile $ m M.!? (x,y))) [leftBound .. rightBound]) [topBound .. bottomBound]
+mapToListPointsBorder :: Int -> a -> Map Point a -> [[(Point,a)]]
+mapToListPointsBorder border defaultTile m = map (\y -> map (\x -> ((x,y), fromMaybe defaultTile $ m M.!? (x,y))) [leftBound .. rightBound]) [topBound .. bottomBound]
   where
     keys = M.keys m
     leftBound   = minimum (map fst keys) - border
     rightBound  = maximum (map fst keys) + border
     topBound    = minimum (map snd keys) - border
     bottomBound = maximum (map snd keys) + border
+
+mapToList :: a -> Map Point a -> [[a]]
+mapToList = mapToListBorder 0
+
+mapToListBorder :: Int -> a -> Map Point a -> [[a]]
+mapToListBorder border defaultTile m = map (\y -> map (\x -> fromMaybe defaultTile $ m M.!? (x,y)) [leftBound .. rightBound]) [topBound .. bottomBound]
+  where
+    keys = M.keys m
+    leftBound   = minimum (map fst keys) - border
+    rightBound  = maximum (map fst keys) + border
+    topBound    = minimum (map snd keys) - border
+    bottomBound = maximum (map snd keys) + border
+
+listToMap :: [[a]] -> Map Point a
+listToMap = M.fromList . concat . zipWith (\y -> zipWith (\x c -> ((x,y),c)) [0..]) [0..]
 
 floodFillAdj :: Point -> [Point] -> Map Point Int
 floodFillAdj start points = let initialPoints = S.delete start $ S.fromList points
@@ -63,7 +72,10 @@ floodFillAdj start points = let initialPoints = S.delete start $ S.fromList poin
       where
         (s',newNeighbors) = neighbors s q
 
-drawMap :: ((Point,a) -> String) -> [[(Point,a)]] -> IO ()
+drawMapPoints :: ((Point,a) -> String) -> [[(Point,a)]] -> IO ()
+drawMapPoints drawTile = mapM_ (putStrLn . concatMap drawTile)
+
+drawMap :: (a -> String) -> [[a]] -> IO ()
 drawMap drawTile = mapM_ (putStrLn . concatMap drawTile)
 
 drawFloodMap :: Map Point Int -> IO ()
@@ -71,9 +83,9 @@ drawFloodMap m = drawMap _drawTile $ mapToListBorder 1 (-1) m
   where
     maxFlood = maximum $ M.elems m
 
-    _drawTile :: (Point, Int) -> String
-    _drawTile (_, -1)    = "\x1b[40m \x1b[0m"
-    _drawTile (_, flood) = "\x1b[48;5;" ++ show color ++ "m \x1b[0m"
+    _drawTile :: Int -> String
+    _drawTile (-1)    = "\x1b[40m \x1b[0m"
+    _drawTile flood = "\x1b[48;5;" ++ show color ++ "m \x1b[0m"
       where
         color = 40 + round (5 * fromIntegral (maxFlood - flood) / (fromIntegral maxFlood + 1))
 

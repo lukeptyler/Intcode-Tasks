@@ -47,6 +47,9 @@ setAt i v = do
 pushInput :: Monad m => Int -> ProgramT m ()
 pushInput input = modify $ \intcode -> intcode {_inputQueue = _inputQueue intcode ++ [input]}
 
+pushInputList :: Monad m => [Int] -> ProgramT m ()
+pushInputList inputList = modify $ \intcode -> intcode {_inputQueue = _inputQueue intcode ++ inputList}
+
 popOutput :: Monad m => ProgramT m Int
 popOutput = do
   outputQueue <- gets _outputQueue
