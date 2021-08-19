@@ -1,4 +1,4 @@
-module Task10.Core
+module Task11.Core
   ( part1
   , part2
   ) where
@@ -8,7 +8,7 @@ import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class    (liftIO)
 
 import Lib (inputFile)
-import Task10.Intcode (IntegrationIO, 
+import Task11.Intcode (IntegrationIO, 
                        initIntcode, 
                        runIntegrationASCII, evalIntegrationT,
                        popOutput, pushInputList

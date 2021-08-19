@@ -1,5 +1,5 @@
 {-# LANGUAGE RankNTypes #-}
-module Task10.Intcode.Integration where
+module Task11.Intcode.Integration where
 
 import Control.Monad.Trans.State (execStateT, evalStateT,
                                   execState, evalState,
@@ -13,9 +13,9 @@ import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class    (liftIO)
 import Lib                       (prompt)
 
-import Task10.Intcode.Types      (Integration, IntegrationT, IntegrationIO, State(..), Intcode(_state))
-import Task10.Intcode.Program    (runUntilStop)
-import Task10.Intcode.Accessors  (pushInput, pushInputList, popOutput, isHalted)
+import Task11.Intcode.Types      (Integration, IntegrationT, IntegrationIO, State(..), Intcode(_state))
+import Task11.Intcode.Program    (runUntilStop)
+import Task11.Intcode.Accessors  (pushInput, pushInputList, popOutput, isHalted)
 
 execIntegration :: Integration s a -> s -> Intcode -> s
 execIntegration integration s intcode = evalState (execStateT integration s) intcode

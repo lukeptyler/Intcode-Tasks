@@ -18,6 +18,7 @@ import qualified Task07.Core         as Core7
 import qualified Task08.Core         as Core8
 import qualified Task09.Core         as Core9
 import qualified Task10.Core         as Core10
+import qualified Task11.Core         as Core11
 
 main :: IO ()
 main = do
@@ -74,6 +75,7 @@ taskList =
   , Task "Task  (8): Set and Forget"                   Core8.part1  Core8.part2
   , Task "Task  (9): Tractor Beam"                     Core9.part1  Core9.part2
   , Task "Task (10): Springdroid Adventure"            Core10.part1 Core10.part2
+  , Task "Task (11): Category Six"                     Core11.part1 Core11.part2
   ]
 
 taskMap :: IntMap Task
