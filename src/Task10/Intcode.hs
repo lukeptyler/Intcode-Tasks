@@ -12,8 +12,8 @@ import Task10.Intcode.Accessors   as I (pushInput, pushInputList, popOutput)
 import Task10.Intcode.Program     as I (execProgram, evalProgram,
                                         execProgramT, evalProgramT,
                                         runUntilStop,
-                                        runProgram, runProgramIO)
+                                        runProgram, runProgramIO, runProgramASCII)
 
 import Task10.Intcode.Integration as I (execIntegration, evalIntegration,
                                         execIntegrationT, evalIntegrationT,
-                                        runIntegration, runIntegrationIO)
+                                        runIntegration, runIntegrationIO, runIntegrationASCII)

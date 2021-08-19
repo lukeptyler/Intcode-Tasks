@@ -13,7 +13,7 @@ import Lib                       (prompt)
 
 import Task10.Intcode.Types      (Integration, IntegrationT, IntegrationIO, State(..), Intcode(_state))
 import Task10.Intcode.Program    (runUntilStop)
-import Task10.Intcode.Accessors  (pushInput, popOutput, isHalted)
+import Task10.Intcode.Accessors  (pushInput, pushInputList, popOutput, isHalted)
 
 execIntegration :: Integration s a -> s -> Intcode -> s
 execIntegration integration s intcode = evalState (execStateT integration s) intcode
@@ -49,4 +49,15 @@ runIntegrationIO handleInput handleOutput = runIntegration (inputIO >>= handleIn
     outputIO = do
       output <- lift $ popOutput
       liftIO $ putStrLn $ "Output: " ++ show output
+      return output
+
+runIntegrationASCII :: IntegrationIO s () -> (Int -> IntegrationIO s ()) -> IntegrationIO s ()
+runIntegrationASCII handleInput handleOutput = runIntegration handleInput (outputASCII >>= handleOutput)
+  where
+    outputASCII :: IntegrationIO s Int
+    outputASCII = do
+      output <- lift $ popOutput
+      if output <= 127
+      then liftIO $ putChar $ toEnum output
+      else liftIO $ print output
       return output

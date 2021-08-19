@@ -14,7 +14,7 @@ import Task10.Intcode.Types      (State(..), Intcode(..),
 import Task10.Intcode.Accessors  (opcode,
                                   params, paramsWithWrite,
                                   isRunning, isHalted,
-                                  pushInput, popOutput)
+                                  pushInput, pushInputList, popOutput)
 import Task10.Intcode.Operations
 
 execProgram :: Program a -> Intcode -> Intcode
@@ -97,3 +97,18 @@ runProgramIO = runProgram inputIO outputIO
     outputIO = do
       output <- popOutput
       liftIO $ putStrLn $ "Output: " ++ show output
+
+runProgramASCII :: ProgramIO ()
+runProgramASCII = runProgram inputASCII outputASCII
+  where
+    inputASCII :: ProgramIO ()
+    inputASCII = do
+      input <- liftIO $ prompt "Input: "
+      pushInputList $ map fromEnum $ input ++ "\n"
+
+    outputASCII :: ProgramIO ()
+    outputASCII = do
+      output <- popOutput
+      if output <= 127
+      then liftIO $ putChar $ toEnum output
+      else liftIO $ print output
