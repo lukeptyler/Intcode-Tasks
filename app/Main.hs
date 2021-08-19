@@ -17,6 +17,7 @@ import qualified Task06.Core         as Core6
 import qualified Task07.Core         as Core7
 import qualified Task08.Core         as Core8
 import qualified Task09.Core         as Core9
+import qualified Task10.Core         as Core10
 
 main :: IO ()
 main = do
@@ -63,15 +64,16 @@ runTask task = do
 
 taskList :: [Task]
 taskList =
-  [ Task "Task (1): 1202 Program Alarm"               Core1.part1 Core1.part2
-  , Task "Task (2): Sunny with a Chance of Asteroids" Core2.part1 Core2.part2
-  , Task "Task (3): Amplification Circuit"            Core3.part1 Core3.part2
-  , Task "Task (4): Sensor Boost"                     Core4.part1 Core4.part2
-  , Task "Task (5): Space Police"                     Core5.part1 Core5.part2
-  , Task "Task (6): Care Package"                     Core6.part1 Core6.part2
-  , Task "Task (7): Oxygen System"                    Core7.part1 Core7.part2
-  , Task "Task (8): Set and Forget"                   Core8.part1 Core8.part2
-  , Task "Task (9): Tractor Beam"                     Core9.part1 Core9.part2
+  [ Task "Task  (1): 1202 Program Alarm"               Core1.part1  Core1.part2
+  , Task "Task  (2): Sunny with a Chance of Asteroids" Core2.part1  Core2.part2
+  , Task "Task  (3): Amplification Circuit"            Core3.part1  Core3.part2
+  , Task "Task  (4): Sensor Boost"                     Core4.part1  Core4.part2
+  , Task "Task  (5): Space Police"                     Core5.part1  Core5.part2
+  , Task "Task  (6): Care Package"                     Core6.part1  Core6.part2
+  , Task "Task  (7): Oxygen System"                    Core7.part1  Core7.part2
+  , Task "Task  (8): Set and Forget"                   Core8.part1  Core8.part2
+  , Task "Task  (9): Tractor Beam"                     Core9.part1  Core9.part2
+  , Task "Task (10): Springdroid Adventure"            Core10.part1 Core10.part2
   ]
 
 taskMap :: IntMap Task
