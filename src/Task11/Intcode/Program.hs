@@ -71,6 +71,7 @@ runCallback for = do
     Just callback -> do
       modify $ \intcode -> intcode {_state = Running, _callback = Nothing}
       callback
+      step_
 
 step :: Monad m => ProgramT m Intcode
 step = step_ >> get
